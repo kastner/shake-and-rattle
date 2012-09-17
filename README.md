@@ -6,7 +6,7 @@ Building
 
 * download / compile / install [psmoveapi](https://github.com/thp/psmoveapi)
 * [pair](http://gutefabrik.com/blog/?p=1843) your psmove controllers
-* build whatever example you want: `cc -lpsmoveapi game.c -o game`
+* build whatever example you want: eg: `make game`
 
 
 Examples:
