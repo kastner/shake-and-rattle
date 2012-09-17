@@ -20,8 +20,8 @@ int main(void)
     float decay = 0.009;
     float increase = 0.004;
     
-    // amount to get to win
-    float win = 0.99;
+    // amount to get to brightness
+    float brightness = 0.99;
 
     int told_everyone = 0;
 
@@ -71,33 +71,26 @@ int main(void)
         psmove_update_leds(moves[i]);
     }
 
-    int color = -3;
+    int colors[] = {-3, -3, -3, -3, -3, -3, -3};
+    int trigger_downs[] = {0, 0, 0, 0, 0, 0, 0};
+
     while (!(psmove_get_buttons(moves[0]) & Btn_PS)) {
         for (i = move_count-1; i >= 0; i--) {
             PSMove *move = moves[i];
             int res = psmove_poll(move);
             if (res) {
-                color = color + 3;
-                color = color % (sizeof(rcolors) / 3);
+                if (psmove_get_trigger(move) >= 100 && ! trigger_downs[i]) {
+                    colors[i] = colors[i] + 3;
+                    colors[i] = colors[i] % (sizeof(rcolors) / 3);
 
-                int x, y, z;
-                psmove_get_gyroscope(move, &x, &y, &z);
-                int diff_x = x - last_xs[i];
-                int diff_y = y - last_ys[i];
-                int diff_z = z - last_zs[i];
-
-                // update last pos
-                last_xs[i] = x;
-                last_ys[i] = y;
-                last_zs[i] = z;
-
-                float distance = sqrt((diff_x * diff_x) + (diff_y * diff_y) + (diff_z * diff_z));
-
-                if (distance > dist_thresh) {
-                    psmove_set_leds(moves[i], rcolors[color + 0] * win, rcolors[color + 1] * win, rcolors[color + 2] * win);
+                    psmove_set_leds(move, rcolors[colors[i] + 0] * brightness, rcolors[colors[i] + 1] * brightness, rcolors[colors[i] + 2] * brightness);
+                    psmove_update_leds(move);
+                    trigger_downs[i] = 0;
                 }
 
-                psmove_update_leds(move);
+                if (psmove_get_trigger(move) <= 5 && trigger_downs[i]) {
+                    trigger_downs[i] = 1;
+                }
 
             }
             usleep(10000);
