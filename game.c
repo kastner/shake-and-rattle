@@ -51,35 +51,10 @@ int main(void)
 
     float vals[7];
 
-    int colors[7][3];
-
-    colors[0][0] = 0;
-    colors[0][1] = 255;
-    colors[0][2] = 0;
-
-    colors[1][0] = 255;
-    colors[1][1] = 0;
-    colors[1][2] = 0;
-
-    colors[2][0] = 0;
-    colors[2][1] = 0;
-    colors[2][2] = 255;
-
-    colors[3][0] = 128;
-    colors[3][1] = 128;
-    colors[3][2] = 0;
-
-    colors[4][0] = 0;
-    colors[4][1] = 128;
-    colors[4][2] = 128;
-
-    colors[5][0] = 128;
-    colors[5][1] = 0;
-    colors[5][2] = 128;
-
-    colors[6][0] = 64;
-    colors[6][1] = 64;
-    colors[6][2] = 64;
+    int colors[][3] = {
+      {0, 255, 0}, {255, 0, 0}, {0, 0, 255}, {128, 128, 0}, 
+      {0, 128, 128}, {128, 0, 128}, {64, 64, 64}
+    };
 
     int i, ii, j, move_count;
 
