@@ -47,6 +47,11 @@ int main(void)
     move_count = psmove_count_connected();
     printf("Connected controllers: %d\n", move_count);
 
+    if (move_count < 1) {
+        printf("You must have at least 1 player!\n");
+        exit(1);
+    }
+
     for (i = move_count-1; i >= 0; i--) {
         moves[i] = psmove_connect_by_id(i);
         if (moves[i] == NULL) {
