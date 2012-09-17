@@ -72,7 +72,7 @@ int main(void)
     if (env_decay != NULL) { decay = atof(env_decay); }
 
     char *env_increase = getenv("INCREASE");
-    if (env_increase != NULL) { decay = atof(env_increase); }
+    if (env_increase != NULL) { increase = atof(env_increase); }
 
 
     for (i = 7; i >= 0; i--) { 
