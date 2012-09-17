@@ -1,5 +1,25 @@
 /*
  * Some game thing
+ *
+ * Erik Kastner <kastner@gmail.com>
+ * Hacked mostly during XOXO. Inspired by JSJoust.
+ *
+ * 2-7 players. Pair the controllers then launch the game.
+ * Each player hits the trigger to register
+ * once everyone is registered, everyone's colors will be shown
+ * then the balls will go white and everyone shakes as fast as they can
+ * as you shake, your color fills up, the first one to fill it all the way wins
+ *
+ * just hit the trigger after a round to start again
+ *
+ *
+ * allow overriding of game variables with environment vars
+ *
+ * DIST_THRESH: (int) amount needed to move
+ * WIN_VAL: (float, 0-1, default: 0.99) total score to get to for a win (also controls max color)
+ * DECAY: (float, 0-1, default: 0.009) how much score decreases each time it's not moved enough
+ * INCREASE: (float, 0-1, default: 0.04) how much score increase each time it is moved enough
+ *
  */
 
 #include <unistd.h>
@@ -7,12 +27,10 @@
 #include <stdlib.h>
 #include <math.h>
 
-//#include <psmove/psmove.h>
 #include <psmoveapi/psmove.h>
 
 int main(void)
 {
-    //PSMove *move, *move2;
     PSMove *moves[7];
 
     int last_xs[7];
@@ -20,9 +38,10 @@ int main(void)
     int last_zs[7];
     int ready[7];
 
-    //int state = 0;
-
+    // how much to decay when the controller hasn't moved enough
     float decay = 0.009;
+
+    // how much to increase when it has moved enough
     float increase = 0.004;
     
     // amount to get to win
@@ -64,7 +83,22 @@ int main(void)
 
     int i, ii, j, move_count;
 
+    // amount needed to move to get an increase
     int dist_thresh = 1000;
+
+
+    char *env_dist_thresh = getenv("DIST_THRESH");
+    if (env_dist_thresh != NULL) { dist_thresh = atoi(env_dist_thresh); }
+
+    char *env_win = getenv("WIN_VAL");
+    if (env_win != NULL) { win = atof(env_win); }
+
+    char *env_decay = getenv("DECAY");
+    if (env_decay != NULL) { decay = atof(env_decay); }
+
+    char *env_increase = getenv("INCREASE");
+    if (env_increase != NULL) { decay = atof(env_increase); }
+
 
     for (i = 7; i >= 0; i--) { 
       vals[i] = 0;
