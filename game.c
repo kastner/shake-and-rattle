@@ -10,7 +10,7 @@
 //#include <psmove/psmove.h>
 #include <psmoveapi/psmove.h>
 
-int main(int argc, char* argv[])
+int main(void)
 {
     //PSMove *move, *move2;
     PSMove *moves[7];
@@ -30,11 +30,7 @@ int main(int argc, char* argv[])
 
     int told_everyone = 0;
 
-    int dist_thresh = 1000;
-
     float vals[7];
-
-    struct rgb { int r, g, b; };
 
     int colors[7][3];
 
@@ -67,6 +63,8 @@ int main(int argc, char* argv[])
     colors[6][2] = 64;
 
     int i, ii, j, move_count;
+
+    int dist_thresh = 1000;
 
     for (i = 7; i >= 0; i--) { 
       vals[i] = 0;
@@ -103,7 +101,6 @@ int main(int argc, char* argv[])
             int res = psmove_poll(move);
             if (res) {
                 if (ready[i] == -1) {
-                  //printf("trigger: %d i: %i\n", psmove_get_trigger(move), i);
                   if (psmove_get_trigger(move) >= 100) {
                     ready[i] = 0;
                     for (j=0; j<10; j++) {
@@ -153,13 +150,18 @@ int main(int argc, char* argv[])
                 int diff_y = y - last_ys[i];
                 int diff_z = z - last_zs[i];
 
+                // update last pos
+                last_xs[i] = x;
+                last_ys[i] = y;
+                last_zs[i] = z;
+
                 float distance = sqrt((diff_x * diff_x) + (diff_y * diff_y) + (diff_z * diff_z));
 
-                if (distance > dist_thresh) {
+                if (distance > (float)dist_thresh) {
                     vals[i] = vals[i] + increase;
                 }
 
-                if (distance < dist_thresh) {
+                if (distance < (float)dist_thresh) {
                     vals[i] = vals[i] - decay;
                     if (vals[i] <= 0) { vals[i] = 0; }
                 }
