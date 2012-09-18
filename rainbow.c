@@ -166,10 +166,9 @@ int main(void)
         psmove_update_leds(moves[i]);
     }
 
-    int colors[] = {450, -1, -1, -1, -1, -1, -1};
+    int colors[] = {0, 0, 0, 0, 0, 0, 0};
     int trigger_downs[] = {0, 0, 0, 0, 0, 0, 0};
-    int max_color = (sizeof(rcolors) / sizeof(int));
-    printf("max: %d\n", max_color);
+    int max_color = (sizeof(rcolors) / sizeof(int)) / 3;
 
     while (!(psmove_get_buttons(moves[0]) & Btn_PS)) {
         for (i = move_count-1; i >= 0; i--) {
@@ -191,8 +190,7 @@ int main(void)
 
                 if (distance > dist_thresh) {
                     colors[i] = colors[i] + 1;
-                    if (colors[i] >= (int)(sizeof(rcolors) / 3)) { colors[i] = 0; }
-                    printf("my color thing: %d, red: %d, green: %d, blue: %d\n", colors[i], rcolors[colors[i]][0], rcolors[colors[i]][1], rcolors[colors[i]][2]);
+                    if (colors[i] >= max_color) { colors[i] = 0; }
 
                     psmove_set_leds(move, rcolors[colors[i]][0] * brightness, rcolors[colors[i]][1] * brightness, rcolors[colors[i]][2] * brightness);
                     psmove_update_leds(move);
