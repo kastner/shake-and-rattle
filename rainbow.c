@@ -21,7 +21,7 @@ int main(void)
     float increase = 0.004;
     
     // amount to get to brightness
-    float brightness = 0.99;
+    float brightness = 0.49;
 
     int told_everyone = 0;
 
@@ -79,17 +79,26 @@ int main(void)
             PSMove *move = moves[i];
             int res = psmove_poll(move);
             if (res) {
-                if (psmove_get_trigger(move) >= 100 && ! trigger_downs[i]) {
+                int x, y, z;
+                psmove_get_gyroscope(move, &x, &y, &z);
+                int diff_x = x - last_xs[i];
+                int diff_y = y - last_ys[i];
+                int diff_z = z - last_zs[i];
+
+                // update last pos
+                last_xs[i] = x;
+                last_ys[i] = y;
+                last_zs[i] = z;
+
+                float distance = sqrt((diff_x * diff_x) + (diff_y * diff_y) + (diff_z * diff_z));
+
+                if (distance > dist_thresh) {
+
                     colors[i] = colors[i] + 3;
                     colors[i] = colors[i] % (sizeof(rcolors) / 3);
 
                     psmove_set_leds(move, rcolors[colors[i] + 0] * brightness, rcolors[colors[i] + 1] * brightness, rcolors[colors[i] + 2] * brightness);
                     psmove_update_leds(move);
-                    trigger_downs[i] = 0;
-                }
-
-                if (psmove_get_trigger(move) <= 5 && trigger_downs[i]) {
-                    trigger_downs[i] = 1;
                 }
 
             }
